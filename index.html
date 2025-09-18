@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <title>SkyWay テスト接続</title>
-<script type="module">
-import { SkyWayContext } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@0.2.3/dist/skyway-core.js";
 
+<!-- SkyWay Room SDK をブラウザ用に読み込み -->
+<script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room@0.2.3/dist/skyway-room-latest.js"></script>
+
+<script>
 let localStream;
 let room;
 
 async function startConnection() {
-  // HTMLの入力欄からトークン取得
+  // 入力欄からトークンを取得
   const token = document.getElementById("tokenInput").value.trim();
 
   if (!token) {
@@ -24,18 +26,17 @@ async function startConnection() {
     document.getElementById("myVideo").srcObject = localStream;
 
     // SkyWay Context 作成
-    const context = await SkyWayContext.Create(token);
+    const context = await SkyWay.createContext({ authToken: token });
 
     // ルーム作成または参加
-    room = await context.Room.Create({ name: "test-room", type: "sfu" });
-    await room.Join();
+    room = await context.joinRoom("test-room", { type: "sfu" });
 
     // 自分の映像を送信
-    await room.LocalStream.Publish(localStream);
+    room.publish(localStream);
 
     // 相手の映像を受信
-    room.RemoteStreams.on("added", (remoteStream) => {
-      document.getElementById("remoteVideo").srcObject = remoteStream;
+    room.onStreamAdded.subscribe((event) => {
+      document.getElementById("remoteVideo").srcObject = event.stream;
     });
 
     alert("接続完了！同じルームの人の映像が表示されます。");
