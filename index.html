@@ -1,21 +1,65 @@
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>Step1: Camera Test</title></head>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SkyWay Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f5f7fa;
+    }
+    form {
+      display: inline-block;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
 <body>
-  <h3>カメラテスト</h3>
-  <video id="localVideo" autoplay muted playsinline style="width:320px;height:240px;border:1px solid gray"></video>
+  <h2>SkyWayにログイン</h2>
+  <form onsubmit="goToCall(event)">
+    <label>
+      App ID:
+      <input type="text" id="appId" required>
+    </label>
+    <label>
+      Secret:
+      <input type="password" id="secret" required>
+    </label>
+    <button type="submit">接続</button>
+  </form>
 
   <script>
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        const video = document.getElementById('localVideo');
-        video.srcObject = stream;
-      } catch (e) {
-        alert("カメラの取得に失敗しました: " + e);
-      }
+    function goToCall(e) {
+      e.preventDefault();
+      const appId = document.getElementById('appId').value;
+      const secret = document.getElementById('secret').value;
+      // call.html にキーを渡す
+      window.location.href = `call.html?appId=${encodeURIComponent(appId)}&secret=${encodeURIComponent(secret)}`;
     }
-    startCamera();
   </script>
 </body>
 </html>
