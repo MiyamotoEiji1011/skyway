@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>SkyWay テスト接続</title>
+<title>SkyWay テスト接続（ブラウザ用）</title>
 
-<!-- SkyWay Room SDK をブラウザ用に読み込み -->
+<!-- SkyWay Room SDK ブラウザ用 -->
 <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room@0.2.3/dist/skyway-room-latest.js"></script>
 
 <script>
@@ -12,7 +12,6 @@ let localStream;
 let room;
 
 async function startConnection() {
-  // 入力欄からトークンを取得
   const token = document.getElementById("tokenInput").value.trim();
 
   if (!token) {
@@ -21,21 +20,21 @@ async function startConnection() {
   }
 
   try {
-    // カメラとマイクを取得
+    // カメラとマイク取得
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     document.getElementById("myVideo").srcObject = localStream;
 
     // SkyWay Context 作成
-    const context = await SkyWay.createContext({ authToken: token });
+    const context = await SkyWayRoom.createContext({ authToken: token });
 
-    // ルーム作成または参加
+    // ルームに参加（存在しなければ作成）
     room = await context.joinRoom("test-room", { type: "sfu" });
 
     // 自分の映像を送信
     room.publish(localStream);
 
-    // 相手の映像を受信
-    room.onStreamAdded.subscribe((event) => {
+    // 他の人の映像を受信
+    room.remoteStreams.onAdd.subscribe((event) => {
       document.getElementById("remoteVideo").srcObject = event.stream;
     });
 
