@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>SkyWay テスト</title>
+<title>SkyWay テスト接続</title>
 <script type="module">
 import { SkyWayContext } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@0.2.3/dist/skyway-core.js";
 
@@ -10,39 +10,54 @@ let localStream;
 let room;
 
 async function startConnection() {
-  // トークンを入力してもらう
-  const token = prompt("SkyWayのAuth Tokenを入力してください");
+  // HTMLの入力欄からトークン取得
+  const token = document.getElementById("tokenInput").value.trim();
 
-  // カメラ・マイク取得
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  const myVideo = document.getElementById("myVideo");
-  myVideo.srcObject = localStream;
+  if (!token) {
+    alert("トークンを入力してください！");
+    return;
+  }
 
-  // SkyWay Context作成
-  const context = await SkyWayContext.Create(token);
+  try {
+    // カメラとマイクを取得
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    document.getElementById("myVideo").srcObject = localStream;
 
-  // ルーム作成または参加
-  room = await context.Room.Create({ name: "test-room", type: "sfu" });
-  await room.Join();
+    // SkyWay Context 作成
+    const context = await SkyWayContext.Create(token);
 
-  // 自分の映像を送信
-  await room.LocalStream.Publish(localStream);
+    // ルーム作成または参加
+    room = await context.Room.Create({ name: "test-room", type: "sfu" });
+    await room.Join();
 
-  // 他の人の映像を受信
-  room.RemoteStreams.on("added", (remoteStream) => {
-    const remoteVideo = document.getElementById("remoteVideo");
-    remoteVideo.srcObject = remoteStream;
-  });
+    // 自分の映像を送信
+    await room.LocalStream.Publish(localStream);
 
-  alert("接続完了！同じルームの人の映像が表示されます");
+    // 相手の映像を受信
+    room.RemoteStreams.on("added", (remoteStream) => {
+      document.getElementById("remoteVideo").srcObject = remoteStream;
+    });
+
+    alert("接続完了！同じルームの人の映像が表示されます。");
+  } catch (err) {
+    console.error(err);
+    alert("接続中にエラーが発生しました。コンソールを確認してください。");
+  }
 }
 </script>
 </head>
 <body>
-<h2>SkyWayテスト</h2>
+<h2>SkyWay テスト接続（トークン方式）</h2>
+
+<label>SkyWay Auth Token:</label>
+<input type="text" id="tokenInput" placeholder="ここにトークンを貼ってください" style="width:400px;">
 <button onclick="startConnection()">接続開始</button>
-<br><br>
-<video id="myVideo" autoplay muted width="320" height="240" style="border:1px solid #000;"></video>
-<video id="remoteVideo" autoplay width="320" height="240" style="border:1px solid #000;"></video>
+
+<h3>自分の映像</h3>
+<video id="myVideo" autoplay muted playsinline style="border:1px solid #000;" width="320" height="240"></video>
+
+<h3>相手の映像</h3>
+<video id="remoteVideo" autoplay playsinline style="border:1px solid #000;" width="320" height="240"></video>
+
 </body>
 </html>
