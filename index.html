@@ -1,65 +1,48 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>SkyWay Login</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f5f7fa;
-    }
-    form {
-      display: inline-block;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    input {
-      display: block;
-      margin: 10px auto;
-      padding: 10px;
-      width: 80%;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>SkyWay テスト</title>
+<script type="module">
+import { SkyWayContext } from "https://cdn.jsdelivr.net/npm/@skyway-sdk/core@0.2.3/dist/skyway-core.js";
+
+let localStream;
+let room;
+
+async function startConnection() {
+  // トークンを入力してもらう
+  const token = prompt("SkyWayのAuth Tokenを入力してください");
+
+  // カメラ・マイク取得
+  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  const myVideo = document.getElementById("myVideo");
+  myVideo.srcObject = localStream;
+
+  // SkyWay Context作成
+  const context = await SkyWayContext.Create(token);
+
+  // ルーム作成または参加
+  room = await context.Room.Create({ name: "test-room", type: "sfu" });
+  await room.Join();
+
+  // 自分の映像を送信
+  await room.LocalStream.Publish(localStream);
+
+  // 他の人の映像を受信
+  room.RemoteStreams.on("added", (remoteStream) => {
+    const remoteVideo = document.getElementById("remoteVideo");
+    remoteVideo.srcObject = remoteStream;
+  });
+
+  alert("接続完了！同じルームの人の映像が表示されます");
+}
+</script>
 </head>
 <body>
-  <h2>SkyWayにログイン</h2>
-  <form onsubmit="goToCall(event)">
-    <label>
-      App ID:
-      <input type="text" id="appId" required>
-    </label>
-    <label>
-      Secret:
-      <input type="password" id="secret" required>
-    </label>
-    <button type="submit">接続</button>
-  </form>
-
-  <script>
-    function goToCall(e) {
-      e.preventDefault();
-      const appId = document.getElementById('appId').value;
-      const secret = document.getElementById('secret').value;
-      // call.html にキーを渡す
-      window.location.href = `call.html?appId=${encodeURIComponent(appId)}&secret=${encodeURIComponent(secret)}`;
-    }
-  </script>
+<h2>SkyWayテスト</h2>
+<button onclick="startConnection()">接続開始</button>
+<br><br>
+<video id="myVideo" autoplay muted width="320" height="240" style="border:1px solid #000;"></video>
+<video id="remoteVideo" autoplay width="320" height="240" style="border:1px solid #000;"></video>
 </body>
 </html>
