@@ -1,24 +1,42 @@
-<h1>VR ROBOT TEST</h1>
-<hr />
-<div>
-  <h3>
-    Room名: <input id="room-name" type="text" />
-    <button id="join">入室</button>
-  </h3>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VR ROBOT TEST</title>
+  <!-- CSSの読み込み -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- faviconエラー防止（ダミーでOK） -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body>
+  <h1>VR ROBOT TEST</h1>
+  <hr />
+  <div>
+    <h3>
+      Room名: <input id="room-name" type="text" />
+      <button id="join">入室</button>
+    </h3>
 
-  <h4>ID: <span id="my-id"></span></h4>
+    <h4>ID: <span id="my-id"></span></h4>
 
-  <button id="mute" class="item" disabled>映像・音声OFF</button>
-  <button id="leave" class="item" disabled>退室</button>
-</div>
-<div>
-  <video id="local-video" width="400px" muted playsinline></video>
-</div>
-<hr />
-<div>
-  <p>Publications</p>
-  <div id="button-area"></div>
-  <div id="remote-video-area"></div>
-  <div id="remote-audio-area"></div>
-</div>
-<script type="module" src="index.js"></script>
+    <button id="mute" class="item" disabled>映像・音声OFF</button>
+    <button id="leave" class="item" disabled>退室</button>
+  </div>
+  <div>
+    <video id="local-video" width="400px" muted playsinline></video>
+  </div>
+  <hr />
+  <div>
+    <p>Publications</p>
+    <div id="button-area"></div>
+    <div id="remote-video-area"></div>
+    <div id="remote-audio-area"></div>
+  </div>
+
+  <!-- SkyWay SDK 読み込み (必ずhttpsのCDNを使う) -->
+  <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
+  <!-- 自作のJS -->
+  <script type="module" src="index.js"></script>
+</body>
+</html>
