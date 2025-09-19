@@ -1,21 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>SkyWay Tutorial</title>
-  </head>
-  <body>
-    <p>ID: <span id="my-id"></span></p>
-    <div>
-      room name: <input id="room-name" type="text" />
-      <button id="join">join</button>
-      <button id="leave">leave</button>
-    </div>
-    <video id="local-video" width="400px" muted playsinline></video>
-    <div id="button-area"></div>
-    <div id="remote-media-area"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
-    <script src="main.js"></script>
-  </body>
-</html>
+<h1>VR ROBOT TEST</h1>
+<hr />
+<div>
+  <h3>
+    Room名: <input id="room-name" type="text" />
+    <button id="join">入室</button>
+  </h3>
+
+  <h4>ID: <span id="my-id"></span></h4>
+
+  <button id="mute" class="item" disabled>映像・音声OFF</button>
+  <button id="leave" class="item" disabled>退室</button>
+</div>
+<div>
+  <video id="local-video" width="400px" muted playsinline></video>
+</div>
+<hr />
+<div>
+  <p>Publications</p>
+  <div id="button-area"></div>
+  <div id="remote-video-area"></div>
+  <div id="remote-audio-area"></div>
+</div>
+<script type="module" src="index.js"></script>
