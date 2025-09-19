@@ -1,63 +1,21 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>SkyWay テスト接続（ブラウザ用）</title>
-
-<!-- SkyWay Room SDK ブラウザ用 -->
-<script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room@0.2.3/dist/skyway-room-latest.js"></script>
-
-<script>
-let localStream;
-let room;
-
-async function startConnection() {
-  const token = document.getElementById("tokenInput").value.trim();
-
-  if (!token) {
-    alert("トークンを入力してください！");
-    return;
-  }
-
-  try {
-    // カメラとマイク取得
-    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    document.getElementById("myVideo").srcObject = localStream;
-
-    // SkyWay Context 作成
-    const context = await SkyWayRoom.createContext({ authToken: token });
-
-    // ルームに参加（存在しなければ作成）
-    room = await context.joinRoom("test-room", { type: "sfu" });
-
-    // 自分の映像を送信
-    room.publish(localStream);
-
-    // 他の人の映像を受信
-    room.remoteStreams.onAdd.subscribe((event) => {
-      document.getElementById("remoteVideo").srcObject = event.stream;
-    });
-
-    alert("接続完了！同じルームの人の映像が表示されます。");
-  } catch (err) {
-    console.error(err);
-    alert("接続中にエラーが発生しました。コンソールを確認してください。");
-  }
-}
-</script>
-</head>
-<body>
-<h2>SkyWay テスト接続（トークン方式）</h2>
-
-<label>SkyWay Auth Token:</label>
-<input type="text" id="tokenInput" placeholder="ここにトークンを貼ってください" style="width:400px;">
-<button onclick="startConnection()">接続開始</button>
-
-<h3>自分の映像</h3>
-<video id="myVideo" autoplay muted playsinline style="border:1px solid #000;" width="320" height="240"></video>
-
-<h3>相手の映像</h3>
-<video id="remoteVideo" autoplay playsinline style="border:1px solid #000;" width="320" height="240"></video>
-
-</body>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>SkyWay Tutorial</title>
+  </head>
+  <body>
+    <p>ID: <span id="my-id"></span></p>
+    <div>
+      room name: <input id="room-name" type="text" />
+      <button id="join">join</button>
+      <button id="leave">leave</button>
+    </div>
+    <video id="local-video" width="400px" muted playsinline></video>
+    <div id="button-area"></div>
+    <div id="remote-media-area"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
+    <script src="main.js"></script>
+  </body>
 </html>
