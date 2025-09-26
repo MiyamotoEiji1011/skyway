@@ -1,12 +1,29 @@
-body {
-  font-family: sans-serif;
+/* FILE: style.css */
+:root{
+--bg:#fdf6ff;
+--accent:#ff88cc;
+--panel:#ffffff;
+--muted:#666;
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,'Segoe UI',"Hiragino Kaku Gothic ProN",Meiryo,Arial;color:var(--muted)}
+.wrap{max-width:960px;margin:24px auto;padding:16px}
+h1{text-align:center;color:#b0007a}
+.board-area{display:flex;gap:16px;align-items:flex-start;justify-content:center}
+canvas{background:linear-gradient(180deg,#ffffff, #ffeeff);border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.08)}
+.sidebar{width:220px;background:var(--panel);padding:12px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.04)}
+.next{display:flex;flex-direction:column;align-items:center;margin-bottom:8px}
+.info{font-weight:600;margin:8px 0}
+.info div{margin:6px 0}
+.controls h3{font-size:14px;margin:6px 0}
+.controls ul{margin:0;padding-left:18px}
+.controls li{font-size:13px}
+#restart{display:block;margin:10px auto;padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+.note{text-align:center;margin-top:12px;font-size:14px}
 
-video {
-  background-color: #111;
-  height: 400px;
-}
 
-.item {
-  margin-bottom: 5px;
+/* small responsive tweaks */
+@media (max-width:700px){
+.board-area{flex-direction:column;align-items:center}
+.sidebar{width:92%}
 }
