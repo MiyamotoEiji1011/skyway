@@ -1,21 +1,45 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>SkyWay Tutorial</title>
-  </head>
-  <body>
-    <p>ID: <span id="my-id"></span></p>
-    <div>
-      room name: <input id="room-name" type="text" />
-      <button id="join">join</button>
-      <button id="leave">leave</button>
-    </div>
-    <video id="local-video" width="400px" muted playsinline></video>
-    <div id="button-area"></div>
-    <div id="remote-media-area"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
-    <script src="main.js"></script>
-  </body>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SkyWay Room 接続テスト (新SDK)</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    input, button { margin: 5px; padding: 8px; }
+    video { width: 45%; margin: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h2>SkyWay Room 接続デモ (新SDK)</h2>
+
+  <div>
+    <label>Token: </label>
+    <input type="text" id="token" placeholder="Node.jsで発行したTokenを入力">
+  </div>
+
+  <div>
+    <label>Room名: </label>
+    <input type="text" id="roomName" placeholder="Room名を入力">
+  </div>
+
+  <div>
+    <button id="connectBtn">接続</button>
+  </div>
+
+  <h3>接続状態: <span id="status">未接続</span></h3>
+
+  <div>
+    <h3>自分の映像</h3>
+    <video id="myVideo" autoplay muted playsinline></video>
+  </div>
+
+  <div>
+    <h3>相手の映像</h3>
+    <div id="remoteVideos"></div>
+  </div>
+
+  <!-- SkyWay 新SDK (UMD版) -->
+  <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/core@1.12.0/dist/umd/index.min.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>
