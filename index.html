@@ -1,44 +1,21 @@
-<!-- FILE: index.html -->
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>かわいいテトリス</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<main class="wrap">
-<h1>かわいいテトリス 💖</h1>
-<section class="board-area">
-<canvas id="playfield" width="300" height="600" aria-label="テトリスプレイフィールド"></canvas>
-<div class="sidebar">
-<div class="next">
-<h2>Next</h2>
-<canvas id="next" width="120" height="120"></canvas>
-</div>
-<div class="info">
-<div>Score: <span id="score">0</span></div>
-<div>Lines: <span id="lines">0</span></div>
-<div>Level: <span id="level">1</span></div>
-</div>
-<div class="controls">
-<h3>Controls</h3>
-<ul>
-<li>← / → : 移動</li>
-<li>↑ or Z : 回転</li>
-<li>↓ : ソフトドロップ</li>
-<li>Space : ハードドロップ</li>
-<li>P : 一時停止</li>
-</ul>
-</div>
-<button id="restart">リスタート</button>
-</div>
-</section>
-<p class="note">ランキングは未実装です。遊んでみてくれる？✨</p>
-</main>
-
-
-<script src="script.js"></script>
-</body>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>SkyWay Tutorial</title>
+  </head>
+  <body>
+    <p>ID: <span id="my-id"></span></p>
+    <div>
+      room name: <input id="room-name" type="text" />
+      <button id="join">join</button>
+      <button id="leave">leave</button>
+    </div>
+    <video id="local-video" width="400px" muted playsinline></video>
+    <div id="button-area"></div>
+    <div id="remote-media-area"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/room/dist/skyway_room-latest.js"></script>
+    <script src="main.js"></script>
+  </body>
 </html>
