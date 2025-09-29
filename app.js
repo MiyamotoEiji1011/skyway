@@ -1,40 +1,55 @@
-// app.js
+const { SkyWayContext, SkyWayRoom, SkyWayStreamFactory } = skyway_core;
 
-// URLパラメータ取得
-const params = new URLSearchParams(window.location.search);
-const appId = params.get("appId");
+document.getElementById('connectBtn').addEventListener('click', async () => {
+  const token = document.getElementById('token').value;
+  const roomName = document.getElementById('roomName').value;
+  const statusEl = document.getElementById('status');
 
-// SkyWay SDKの利用準備
-const { SkyWayRoom, SkyWayContext, SkyWayStreamFactory } = skyway_room;
+  if (!token || !roomName) {
+    alert("TokenとRoom名を入力してください。");
+    return;
+  }
 
-async function main() {
-  // 1. SkyWayのコンテキストを作成
-  const context = await SkyWayContext.Create(appId);
+  try {
+    // SkyWay Contextを初期化
+    const context = await SkyWayContext.Create(token);
 
-  // 2. カメラ・マイクのストリームを取得
-  const localStream = await SkyWayStreamFactory.createCameraVideoAndAudioStream();
+    // Roomを取得（なければ新規作成）
+    const room = await SkyWayRoom.FindOrCreate(context, {
+      type: 'sfu',
+      name: roomName,
+    });
 
-  // 3. 自分の映像を表示
-  const localVideo = document.getElementById("localVideo");
-  localStream.attach(localVideo);
-  localVideo.play();
+    // Roomに参加
+    const me = await room.join();
 
-  // 4. P2Pルームに参加（ルーム名は固定で "test-room" とする）
-  const room = await SkyWayRoom.FindOrCreate(context, { type: "p2p", name: "test-room" });
-  const me = await room.join();
+    // 自分のカメラ・マイクを取得
+    const { audio, video } = await SkyWayStreamFactory.createMicrophoneAudioAndCameraStream();
+    await me.publish(audio);
+    await me.publish(video);
 
-  // 5. 自分のストリームを公開
-  await me.publish(localStream);
+    // 自分の映像を表示
+    const myVideo = document.getElementById('myVideo');
+    video.attach(myVideo);
+    myVideo.play();
 
-  // 6. 他の人の映像が来たら表示
-  me.onStreamPublished.add(e => {
-    const { stream } = e.publication;
-    if (stream) {
-      const remoteVideo = document.getElementById("remoteVideo");
-      stream.attach(remoteVideo);
-      remoteVideo.play();
-    }
-  });
-}
+    // リモートメンバーのストリームを受信
+    room.onMemberJoined.add(async (member) => {
+      member.onPublicationSubscribed.add((sub) => {
+        if (sub.stream.track.kind === 'video') {
+          const remoteVideo = document.createElement('video');
+          sub.stream.attach(remoteVideo);
+          remoteVideo.autoplay = true;
+          remoteVideo.playsInline = true;
+          document.getElementById('remoteVideos').appendChild(remoteVideo);
+        }
+      });
+    });
 
-main().catch(console.error);
+    statusEl.textContent = "Roomに参加しました: " + roomName;
+
+  } catch (err) {
+    statusEl.textContent = "エラー: " + err.message;
+    console.error(err);
+  }
+});
