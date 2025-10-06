@@ -1,45 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>SkyWay Room 接続テスト (新SDK)</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    input, button { margin: 5px; padding: 8px; }
-    video { width: 45%; margin: 10px; border: 1px solid #ccc; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nagoya Boost 10000 - SkyWayセミナー</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>SkyWay Room 接続デモ (新SDK)</h2>
 
-  <div>
-    <label>Token: </label>
-    <input type="text" id="token" placeholder="Node.jsで発行したTokenを入力">
-  </div>
+<div class="container">
+  <header>
+    <h1>Nagoya Boost 10000</h1>
+    <h2>SkyWayハンズオンセミナー</h2>
+    <hr />
+  </header>
 
-  <div>
-    <label>Room名: </label>
-    <input type="text" id="roomName" placeholder="Room名を入力">
-  </div>
+  <section class="room-section">
+    <label for="room-name">Room名:</label>
+    <input id="room-name" type="text" placeholder="room1" />
+    <button id="join">入室</button>
+    <button id="leave" disabled>退室</button>
+    <div class="my-id">ID: <span id="my-id"></span></div>
+  </section>
 
-  <div>
-    <button id="connectBtn">接続</button>
-  </div>
+  <section class="video-section">
+    <h3>Remote Video</h3>
+    <div id="remote-video-area" class="video-card"></div>
+    <div id="remote-audio-area"></div>
+  </section>
 
-  <h3>接続状態: <span id="status">未接続</span></h3>
+  <section class="button-section">
+    <div id="button-area"></div>
+  </section>
 
-  <div>
-    <h3>自分の映像</h3>
-    <video id="myVideo" autoplay muted playsinline></video>
-  </div>
+  <section class="joystick-section">
+    <h3>ジョイスティック操作</h3>
+    <div id="joystickWrapper">
+      <div id="joystickContainer">
+        <div id="joystick"></div>
+      </div>
+    </div>
+    <div id="output" style="margin-top:10px; text-align:center; font-family:monospace;">
+      コマンド: MOVE 1 1000 1000 | MOVE 2 1000 1000
+    </div>
+  </section>
+</div>
 
-  <div>
-    <h3>相手の映像</h3>
-    <div id="remoteVideos"></div>
-  </div>
-
-  <!-- SkyWay 新SDK (UMD版) -->
-  <script src="https://cdn.jsdelivr.net/npm/@skyway-sdk/core@1.12.0/dist/umd/index.min.js"></script>
-  <script src="app.js"></script>
+<script type="module" src="index.js"></script>
 </body>
 </html>
