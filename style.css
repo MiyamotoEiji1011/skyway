@@ -1,29 +1,133 @@
-/* FILE: style.css */
-:root{
---bg:#fdf6ff;
---accent:#ff88cc;
---panel:#ffffff;
---muted:#666;
+body {
+    font-family: "Noto Sans JP", sans-serif;
+    background: #f4f7f8;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
 }
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:system-ui,-apple-system,'Segoe UI',"Hiragino Kaku Gothic ProN",Meiryo,Arial;color:var(--muted)}
-.wrap{max-width:960px;margin:24px auto;padding:16px}
-h1{text-align:center;color:#b0007a}
-.board-area{display:flex;gap:16px;align-items:flex-start;justify-content:center}
-canvas{background:linear-gradient(180deg,#ffffff, #ffeeff);border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.08)}
-.sidebar{width:220px;background:var(--panel);padding:12px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,0.04)}
-.next{display:flex;flex-direction:column;align-items:center;margin-bottom:8px}
-.info{font-weight:600;margin:8px 0}
-.info div{margin:6px 0}
-.controls h3{font-size:14px;margin:6px 0}
-.controls ul{margin:0;padding-left:18px}
-.controls li{font-size:13px}
-#restart{display:block;margin:10px auto;padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:white;font-weight:700;cursor:pointer}
-.note{text-align:center;margin-top:12px;font-size:14px}
 
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-/* small responsive tweaks */
-@media (max-width:700px){
-.board-area{flex-direction:column;align-items:center}
-.sidebar{width:92%}
+header h1 {
+    font-size: 2em;
+    margin: 0;
+    text-align: center;
+    color: #333;
+}
+header h2 {
+    font-size: 1.2em;
+    text-align: center;
+    color: #666;
+}
+header hr {
+    margin: 10px 0 20px 0;
+    border: 0;
+    height: 1px;
+    background: #ccc;
+}
+
+.room-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.room-section input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+.room-section button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background: #4caf50;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.room-section button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+.room-section button:hover:not(:disabled) {
+    background: #45a049;
+}
+.room-section .my-id {
+    flex-basis: 100%;
+    margin-top: 10px;
+    color: #555;
+}
+
+.video-section {
+    margin-bottom: 20px;
+}
+.video-section h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+.video-card {
+    background: #000;
+    width: 100%;
+    height: 360px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.button-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.joystick-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.joystick-section h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+#joystickWrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+#joystickContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #ddd;
+    border-radius: 50%;
+}
+#joystick {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: #666;
+    border-radius: 50%;
+    top: 75px;
+    left: 75px;
+    cursor: pointer;
+    touch-action: none;
 }
