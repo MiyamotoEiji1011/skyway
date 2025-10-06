@@ -91,7 +91,7 @@ const token = new SkyWayAuthToken({
   };
 })();
 
-// 🎮 ジョイスティック
+// ジョイスティック
 const joystick = document.getElementById("joystick");
 const container = document.getElementById("joystickContainer");
 const output = document.getElementById("output");
