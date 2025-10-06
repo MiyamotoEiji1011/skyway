@@ -1,4 +1,5 @@
-import { nowInSec, SkyWayAuthToken, SkyWayContext, SkyWayRoom, LocalDataStream, uuidV4 } from "skyway_room";
+const { nowInSec, SkyWayAuthToken, SkyWayContext, SkyWayRoom, LocalDataStream, uuidV4 } = window.skyway_room;
+
 
 // SkyWay認証トークン
 const token = new SkyWayAuthToken({
