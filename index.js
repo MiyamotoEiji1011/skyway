@@ -8,7 +8,7 @@ const {
   uuidV4,
 } = window.skyway_room;
 
-// 🔹 グローバル変数
+//グローバル変数
 let dataStream = null;
 let room, me;
 
@@ -44,7 +44,7 @@ const token = new SkyWayAuthToken({
 
   leaveButton.disabled = true;
 
-  // 🔹 データ送信用UI
+  //データ送信用UI
   const input = document.createElement("input");
   input.placeholder = "送信する文字列";
   const sendButton = document.createElement("button");
@@ -52,7 +52,7 @@ const token = new SkyWayAuthToken({
   buttonArea.appendChild(input);
   buttonArea.appendChild(sendButton);
 
-  // 🔹 入室処理
+  //入室処理
   joinButton.onclick = async () => {
     if (!roomNameInput.value) return alert("Room名を入力してください");
     joinButton.disabled = true;
@@ -121,7 +121,7 @@ const token = new SkyWayAuthToken({
   };
 })();
 
-// =============== 🎮 ジョイスティック処理 ===============
+// =============== ジョイスティック処理 ===============
 
 const joystick = document.getElementById("joystick");
 const container = document.getElementById("joystickContainer");
@@ -192,7 +192,7 @@ function moveJoystick(clientX, clientY) {
   updateCommand(x, y);
 }
 
-// 🖱️ マウス操作
+//マウス操作
 joystick.addEventListener("mousedown", () => (dragging = true));
 document.addEventListener("mouseup", () => {
   if (dragging) {
@@ -205,7 +205,7 @@ document.addEventListener("mousemove", (e) => {
   if (dragging) moveJoystick(e.clientX, e.clientY);
 });
 
-// 📱 タッチ操作
+//タッチ操作
 joystick.addEventListener("touchstart", () => (dragging = true));
 document.addEventListener("touchend", () => {
   if (dragging) {
