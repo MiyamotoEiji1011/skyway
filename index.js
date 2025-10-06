@@ -1,16 +1,24 @@
 const { nowInSec, SkyWayAuthToken, SkyWayContext, SkyWayRoom, LocalDataStream, uuidV4 } = window.skyway_room;
 
+// 🔹 どこからでも使えるように外で定義
+let dataStream = null;
 
-// SkyWay認証トークン
+// SkyWay認証トークン（※必要に応じて自分のApp IDとSecretに差し替えてください）
 const token = new SkyWayAuthToken({
   jti: uuidV4(),
   iat: nowInSec(),
-  exp: nowInSec() + 60*60*24,
+  exp: nowInSec() + 60 * 60 * 24,
   version: 3,
   scope: {
     appId: "441577ac-312a-4ffb-aad5-e540d3876971",
-    rooms: [{ name: "*", methods: ["create","close","updateMetadata"], member:{ name:"*", methods:["publish","subscribe","updateMetadata"] } }]
-  }
+    rooms: [
+      {
+        name: "*",
+        methods: ["create", "close", "updateMetadata"],
+        member: { name: "*", methods: ["publish", "subscribe", "updateMetadata"] },
+      },
+    ],
+  },
 }).encode("Bk9LR3lnRG483XKgUQAzCoP7tpLBhMs45muc9zDOoxE=");
 
 (async () => {
@@ -31,15 +39,13 @@ const token = new SkyWayAuthToken({
   buttonArea.appendChild(input);
   buttonArea.appendChild(sendButton);
 
-  let dataStream;
-
   joinButton.onclick = async () => {
-    if(!roomNameInput.value) return;
+    if (!roomNameInput.value) return;
     joinButton.disabled = true;
     leaveButton.disabled = false;
 
     const context = await SkyWayContext.Create(token);
-    const room = await SkyWayRoom.FindOrCreate(context, { type:"p2p", name:roomNameInput.value });
+    const room = await SkyWayRoom.FindOrCreate(context, { type: "p2p", name: roomNameInput.value });
     const me = await room.join();
     myId.textContent = me.id;
 
@@ -47,38 +53,38 @@ const token = new SkyWayAuthToken({
     me.publish(dataStream);
 
     sendButton.onclick = () => {
-      if(input.value){
+      if (input.value) {
         dataStream.write(input.value);
         console.log("送信:", input.value);
       }
     };
 
     const subscribeAndAttach = async (pub) => {
-      if(pub.publisher.id === me.id) return;
+      if (pub.publisher.id === me.id) return;
       const { stream } = await me.subscribe(pub.id);
 
-      if(stream.track){
+      if (stream.track) {
         let remoteMedia;
-        if(stream.track.kind==="video"){
+        if (stream.track.kind === "video") {
           remoteMedia = document.createElement("video");
-          remoteMedia.autoplay=true;
-          remoteMedia.playsInline=true;
+          remoteMedia.autoplay = true;
+          remoteMedia.playsInline = true;
           stream.attach(remoteMedia);
           remoteVideoArea.appendChild(remoteMedia);
-        } else if(stream.track.kind==="audio"){
+        } else if (stream.track.kind === "audio") {
           remoteMedia = document.createElement("audio");
-          remoteMedia.autoplay=true;
-          remoteMedia.controls=true;
+          remoteMedia.autoplay = true;
+          remoteMedia.controls = true;
           stream.attach(remoteMedia);
           remoteAudioArea.appendChild(remoteMedia);
         }
-      } else if(stream instanceof skyway_room.RemoteDataStream){
-        stream.onData.add(msg=>console.log("受信:",msg));
+      } else if (stream instanceof skyway_room.RemoteDataStream) {
+        stream.onData.add((msg) => console.log("受信:", msg));
       }
     };
 
     room.publications.forEach(subscribeAndAttach);
-    room.onStreamPublished.add(e=>subscribeAndAttach(e.publication));
+    room.onStreamPublished.add((e) => subscribeAndAttach(e.publication));
 
     leaveButton.onclick = async () => {
       await me.leave();
@@ -90,81 +96,90 @@ const token = new SkyWayAuthToken({
       joinButton.disabled = false;
       leaveButton.disabled = true;
     };
-
-    room.onStreamUnpublished.add(e=>{
-      const elem = document.querySelector(`#remote-media-${e.publication.id}`);
-      if(elem) elem.remove();
-    });
   };
 })();
 
-// ---------- ジョイスティック部分 ----------
-const joystick = document.getElementById('joystick');
-const container = document.getElementById('joystickContainer');
-const output = document.getElementById('output');
+// ---------- 🎮 ジョイスティック ----------
+const joystick = document.getElementById("joystick");
+const container = document.getElementById("joystickContainer");
+const output = document.getElementById("output");
 
 const containerSize = container.offsetWidth;
-const center = containerSize/2;
+const center = containerSize / 2;
 const maxRange = center;
 let dragging = false;
 
 const xBase = 1000, xMin = 0, xMax = 2000;
 const yBase = 1000, yMin = 0, yMax = 1300;
 
-function resetJoystick(){
-    joystick.style.left=`${center - joystick.offsetWidth/2}px`;
-    joystick.style.top=`${center - joystick.offsetHeight/2}px`;
+function resetJoystick() {
+  joystick.style.left = `${center - joystick.offsetWidth / 2}px`;
+  joystick.style.top = `${center - joystick.offsetHeight / 2}px`;
 }
 resetJoystick();
 
-function toServoX(pos){ return Math.round(xBase + pos*((xMax-xMin)/2)/maxRange); }
-function toServoY(pos){ return Math.round(yBase + pos*((yMax-yMin)/2)/maxRange); }
-
-function updateCommand(x,y){
-    const servoX = toServoX(x);
-    const servoY = toServoY(-y);
-    const cmdX = `MOVE 1 ${servoX} 1000`;
-    const cmdY = `MOVE 2 ${servoY} 1000`;
-    output.textContent = `コマンド: ${cmdX} | ${cmdY}`;
-
-    // ここでSkyWayに送信する場合
-    if (dataStream) {
-      dataStream.write(cmdX);
-      dataStream.write(cmdY);
-    }  
+function toServoX(pos) {
+  return Math.round(xBase + (pos * (xMax - xMin) / 2) / maxRange);
+}
+function toServoY(pos) {
+  return Math.round(yBase + (pos * (yMax - yMin) / 2) / maxRange);
 }
 
-function moveJoystick(clientX, clientY){
-    const rect = container.getBoundingClientRect();
-    let x = clientX - rect.left - center;
-    let y = clientY - rect.top - center;
+function updateCommand(x, y) {
+  const servoX = toServoX(x);
+  const servoY = toServoY(-y);
+  const cmdX = `MOVE 1 ${servoX} 1000`;
+  const cmdY = `MOVE 2 ${servoY} 1000`;
+  output.textContent = `コマンド: ${cmdX} | ${cmdY}`;
 
-    const dist = Math.sqrt(x*x + y*y);
-    if(dist > maxRange){ x = x/dist*maxRange; y = y/dist*maxRange; }
-
-    joystick.style.left=`${center - joystick.offsetWidth/2 + x}px`;
-    joystick.style.top=`${center - joystick.offsetHeight/2 + y}px`;
-
-    updateCommand(x,y);
+  if (dataStream) {
+    dataStream.write(cmdX);
+    dataStream.write(cmdY);
+    console.log("送信中:", cmdX, cmdY);
+  }
 }
 
-// マウス・タッチイベント
-joystick.addEventListener('mousedown', ()=>dragging=true);
-document.addEventListener('mouseup', ()=>{
-    if(dragging){ dragging=false; resetJoystick(); updateCommand(0,0); }
+function moveJoystick(clientX, clientY) {
+  const rect = container.getBoundingClientRect();
+  let x = clientX - rect.left - center;
+  let y = clientY - rect.top - center;
+
+  const dist = Math.sqrt(x * x + y * y);
+  if (dist > maxRange) {
+    x = (x / dist) * maxRange;
+    y = (y / dist) * maxRange;
+  }
+
+  joystick.style.left = `${center - joystick.offsetWidth / 2 + x}px`;
+  joystick.style.top = `${center - joystick.offsetHeight / 2 + y}px`;
+
+  updateCommand(x, y);
+}
+
+joystick.addEventListener("mousedown", () => (dragging = true));
+document.addEventListener("mouseup", () => {
+  if (dragging) {
+    dragging = false;
+    resetJoystick();
+    updateCommand(0, 0);
+  }
 });
-document.addEventListener('mousemove', e=>{
-    if(!dragging) return;
-    moveJoystick(e.clientX, e.clientY);
+document.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+  moveJoystick(e.clientX, e.clientY);
 });
 
-joystick.addEventListener('touchstart', e=>{ dragging=true; });
-document.addEventListener('touchend', e=>{
-    if(dragging){ dragging=false; resetJoystick(); updateCommand(0,0); }
+joystick.addEventListener("touchstart", () => (dragging = true));
+document.addEventListener("touchend", () => {
+  if (dragging) {
+    dragging = false;
+    resetJoystick();
+    updateCommand(0, 0);
+  }
 });
-document.addEventListener('touchmove', e=>{
-    if(!dragging) return;
-    const touch=e.touches[0];
-    moveJoystick(touch.clientX, touch.clientY);
-    e.preventDefault();
+document.addEventListener("touchmove", (e) => {
+  if (!dragging) return;
+  const touch = e.touches[0];
+  moveJoystick(touch.clientX, touch.clientY);
+  e.preventDefault();
 });
