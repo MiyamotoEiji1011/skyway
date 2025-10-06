@@ -128,7 +128,10 @@ function updateCommand(x,y){
     output.textContent = `コマンド: ${cmdX} | ${cmdY}`;
 
     // ここでSkyWayに送信する場合
-    // if(dataStream) dataStream.write(`${cmdX}|${cmdY}`);
+    if (dataStream) {
+      dataStream.write(cmdX);
+      dataStream.write(cmdY);
+    }  
 }
 
 function moveJoystick(clientX, clientY){
