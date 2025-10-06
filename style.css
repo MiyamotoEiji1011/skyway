@@ -83,31 +83,6 @@ hr {
   background: #000;
 }
 
-#joystickContainer {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 160px;
-  height: 160px;
-  background: #ddd;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  touch-action: none;
-}
-
-#joystick {
-  width: 60px;
-  height: 60px;
-  background: #666;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 #output {
   position: fixed;
   bottom: 20px;
@@ -116,3 +91,31 @@ hr {
   font-family: monospace;
   color: #555;
 }
+
+/* ジョイスティック全体 */
+#joystickContainer {
+  position: relative; /* ←これが超重要！ */
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #ddd;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  touch-action: none;
+  overflow: hidden;
+}
+
+/* スティック部分 */
+#joystick {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #555;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* ←最初から中央に配置 */
+  transition: left 0.05s linear, top 0.05s linear;
+}
+
